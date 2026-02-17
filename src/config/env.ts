@@ -6,6 +6,7 @@ dotenv.config();
 const envSchema = z.object({
   DATABASE_URL: z.string().min(1),
   JWT_SECRET: z.string().min(8),
+  CORS_ORIGINS: z.string().default('http://localhost:3000'),
   PORT: z.string().default('8080').transform(Number)
 });
 

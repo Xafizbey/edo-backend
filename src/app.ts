@@ -8,13 +8,29 @@ import { approvalsRouter } from './modules/approvals/approvals.routes';
 import { adminRouter } from './modules/admin/admin.routes';
 import { auditRouter } from './modules/audit/audit.routes';
 import { errorHandler, notFoundHandler } from './utils/errors';
+import { env } from './config/env';
 
 export const createApp = () => {
   const app = express();
+  const allowedOrigins = env.CORS_ORIGINS.split(',').map((v) => v.trim()).filter(Boolean);
 
   app.use(
     cors({
-      origin: ['http://localhost:3000', 'https://edo-webpanel.vercel.app'],
+      origin: (origin, callback) => {
+        if (!origin) {
+          callback(null, true);
+          return;
+        }
+
+        const explicitMatch = allowedOrigins.includes(origin);
+        const vercelPreview = origin.endsWith('.vercel.app');
+        if (explicitMatch || vercelPreview) {
+          callback(null, true);
+          return;
+        }
+
+        callback(new Error(`Origin ${origin} not allowed by CORS`));
+      },
       credentials: true
     })
   );
