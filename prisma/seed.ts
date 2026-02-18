@@ -1,13 +1,13 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { DecisionStatus, DocumentStatus, DocumentType, Role } from '@prisma/client';
 import { prisma } from '../src/config/prisma';
 
 const main = async () => {
-  const [adminPass, approverPass, userPass] = await Promise.all([
-    bcrypt.hash('Admin123!', 10),
-    bcrypt.hash('Approver123!', 10),
-    bcrypt.hash('User123!', 10)
-  ]);
+  const [adminPass, approverPass, userPass] = [
+    bcrypt.hashSync('Admin123!', 10),
+    bcrypt.hashSync('Approver123!', 10),
+    bcrypt.hashSync('User123!', 10)
+  ];
 
   const admin = await prisma.user.upsert({
     where: { email: 'admin@edo.local' },

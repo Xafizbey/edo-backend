@@ -1,7 +1,7 @@
 import { Role } from '@prisma/client';
 import { prisma } from '../../config/prisma';
 import { AppError } from '../../utils/errors';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 export const listUsers = async (q?: string) => {
   return prisma.user.findMany({
@@ -53,7 +53,7 @@ export const createUser = async (input: CreateUserInput) => {
     throw new AppError('EMAIL_EXISTS', 'Email already exists', 409);
   }
 
-  const passwordHash = await bcrypt.hash(input.password, 10);
+  const passwordHash = bcrypt.hashSync(input.password, 10);
   return prisma.user.create({
     data: {
       fullName: input.fullName,
